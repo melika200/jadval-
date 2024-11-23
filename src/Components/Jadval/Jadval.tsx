@@ -19,6 +19,7 @@ import { CgFileDocument } from "react-icons/cg";
 import { MdReadMore, MdEdit, MdDelete } from "react-icons/md";
 import Tabledata from "../../Services/Tableurl/Tabledata";
 import NavbarItem from "../Navbar/Navbar";
+import Swal from "sweetalert2";
 
 interface RowData {
   id: string;
@@ -60,18 +61,30 @@ export const Jadval: React.FC = () => {
   }, [page, rowsPerPage]);
 
   const handleDelete = async (id: string) => {
-    const confirm = window.confirm("حذف شود؟");
-    if (confirm) {
-      try {
-        await Tabledata.put(`/merchantnew/News/ChangeStatus`, {
-          id,
-          isActive: false,
-        });
-        fetchData(page, rowsPerPage);
-      } catch (err) {
-        console.error("Error deleting data:", err);
+    Swal.fire({
+      title: "آیا مطمئن هستید؟",
+      text: "این عملیات قابل بازگشت نیست",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "بله، حذف شود",
+      cancelButtonText: "لغو",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await Tabledata.put(`/merchantnew/News/ChangeStatus`, {
+            id,
+            isActive: false,
+          });
+          fetchData(page, rowsPerPage);
+          Swal.fire("حذف شد", "آیتم با موفقیت حذف شد", "success");
+        } catch (err) {
+          console.error("Error deleting data:", err);
+          Swal.fire("خطا", "مشکلی در حذف آیتم به وجود آمد", "error");
+        }
       }
-    }
+    });
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -181,7 +194,7 @@ export const Jadval: React.FC = () => {
                       scope="row"
                       sx={{ textAlign: "center", direction: "rtl" }}
                     >
-                       {row.title}
+                      {row.title}
                     </TableCell>
                     <TableCell sx={{ textAlign: "center", direction: "rtl" }}>
                       {row.position}

@@ -14,7 +14,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Tabledata from "../../Services/Tableurl/Tabledata";
 import { MdOutlineBookmarkAdd } from "react-icons/md";
 import { IoCloseOutline } from "react-icons/io5";
-
+import Swal from "sweetalert2";
 const StyledForm = styled("form")({
   display: "flex",
   flexDirection: "column",
@@ -58,7 +58,14 @@ export const Createtable: React.FC = () => {
         payload
       );
       console.log(response);
-      navigate("/jadval");
+      Swal.fire({
+        title: "موفقیت آمیز",
+        text: "با موفقیت انجام شد",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        navigate("/jadval");
+      });
     } catch (err) {
       console.error(err);
     }
